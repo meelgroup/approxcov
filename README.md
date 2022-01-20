@@ -7,9 +7,10 @@ The implementation includes the following algorithms:
 2. Extension of **ApproxCov** to the general case where features can have a finite number of values. It can be found in `approxcov_mv.py` script  
 3. **ApproxMaxCov** algorithm approximating the number of distinct combinations of features satisfying constraints of a configurable system assuming that all features have exactly 2 values. It can be found in `approxmaxcov.py` script  
 4. Extension of **ApproxMaxCov** to the general case where features can have a finite number of values. It can be found in `approxmaxcov_mv.py` script  
-Within each script the algorithms to compute the ground truth are provided. These algorithms are adapted from [baital tool](https://github.com/meelgroup/baital).  
 
-This work is by Eduard Baranov, Sourav Chakraborty, Axel Legay, Kuldeep S. Meel, and Vinodchandran N. Variyam to appear in ICSE '22.
+Within each script the algorithms to compute the ground truth are provided. These algorithms are adapted from [baital tool](https://github.com/meelgroup/baital). 
+
+This work is by Eduard Baranov, Sourav Chakraborty, Axel Legay, Kuldeep S. Meel, and Vinodchandran N. Variyam to appear in ICSE'22.
 
 ## System Requirements
 
@@ -19,7 +20,7 @@ Tested on: Ubuntu 18.10, 20.04 and Debian 11.
 ## Installation
 
 1. Install GMP: `sudo apt install libgmp-dev`
-2. Install ApproxMC4: https://github.com/meelgroup/approxmc (*).
+2. Install [ApproxMC4](https://github.com/meelgroup/approxmc) (*):
     1. `sudo apt install build-essential cmake`
     2. `sudo apt install zlib1g-dev libboost-program-options-dev libm4ri-dev`
     3. `git clone https://github.com/msoos/cryptominisat`
@@ -47,7 +48,7 @@ Benchmarks can be found at [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5
 ## Common Assumptions on the Input Data
 
 Configurable systems has a set of features and a set of constraints on them. We assume that features are numbered from 1 to nFeatures.  
-Original algorithms were developed for the case where all features have exactly 2 possible values. In this case, we use the feature number to indicate that the feature is selected (or have value true) and its negation to indicate that the feature is not selected (or has value false). Constraints is this case are defined with Dimacs CNF format.
+Original algorithms were developed for the case where all features have exactly 2 possible values. In this case, we use the feature number to indicate that the feature is selected (or have value true) and its negation to indicate that the feature is not selected (or has value false). Constraints is this case are defined with Dimacs CNF format.  
 The extension of the algorithms to the general case allows features that can have a finite number of values. In this case, all features shall have values between 0 and x-1, where x is the number of values the feature can have. Note that the feature with two values would also follow the format: their values would be 0 and 1. Constraints shall be defined with QF_BV logic and the input format is based on the SMT-LIB.
 
 ## ApproxCov
@@ -74,14 +75,14 @@ The input file format coincides with the output format of baital and waps tools.
 | -------- | ----------- | ------------- | ----------- |
 | samples | required | | a file with a set of configurations |
 | --twise | required | | t value for t-wise coverage - size of feature combination |
-| --approximate | optional | false | use approximate computations is set; computes ground truth otherwise |
+| --approximate | optional | false | use approximate computations if set; compute ground truth otherwise |
 | --delta | optional | 0.05 | delta parameter for PAC guarantees: approximation is guaranteed to be within (1 ± ε)-factor of the ground truth with probability at least 1 − δ |
 | --epsilon | optional | 0.05 | delta parameter for PAC guarantees: approximation is guaranteed to be within (1 ± ε)-factor of the ground truth with probability at least 1 − δ |
-| --seed SEED | optional | | random seed; only applicable for approximate computations |
+| --seed | optional | | random seed; only applicable for approximate computations |
 
 ### Output
 
-Console output contains two lines with the computed number of combinations and the time taken
+Console output contains two lines with the computed number of combinations and the time taken.
     
 ### Examples of use
 
@@ -96,7 +97,7 @@ would compute the approximate number of feature combinations of size 2 in the `b
 
 ### Benchmarks
 
-In the benchmarks referenced above, `two_values/samples/` folder contains a set of benchmarks used for evaluation of the approximation algorithm. All benchmarks have been generated from the configurable systems in `two_values/cnfs/`with three tools: baital, waps, and quicksampler. All benchmark filenames are composed as <tool>_<configurable-system>.samples.
+In the benchmarks referenced above, `two_values/samples/` folder contains a set of benchmarks used for evaluation of the approximation algorithm. All benchmarks have been generated from the configurable systems in `two_values/cnfs/`with three tools: baital, waps, and quicksampler. All benchmark filenames are composed as \<tool\>_\<configurable-system\>.samples.
 
 ## ApproxCov Extension
 
@@ -112,7 +113,7 @@ Example:
 
 In the example, there are 4 features with 2, 3, 4, and 5 values, respectively, and 2 configurations.
 
-The script `approxcov_mv.py` includes a function `rewrite_output_CASA` that can convert output of CASA tool [1] into the format described above.
+The script `approxcov_mv.py` includes a function `rewrite_output_CASA` that can convert outputs of CASA tool [1] into the alogrithm's input format.
 
 ### Running & Output
 
@@ -148,11 +149,11 @@ A CNF file in Dimacs CNF format.
 | -------- | ----------- | ------------- | ----------- |
 | samples | required | | a file with a set of configurations |
 | --twise | required | | t value for t-wise coverage - size of feature combination |
-| --outputdir | optional | results | directory in which lists of feature combinations are stored for exact computations |
-| --approximate | optional | false | use approximate computations is set; computes ground truth otherwise |
+| --outputdir | optional | results | directory in which lists of feature combinations are stored for the ground truth computations |
+| --approximate | optional | false | use approximate computations if set; compute ground truth otherwise |
 | --delta | optional | 0.05 | delta parameter for PAC guarantees: approximation is guaranteed to be within (1 ± ε)-factor of the ground truth with probability at least 1 − δ |
 | --epsilon | optional | 0.05 | delta parameter for PAC guarantees: approximation is guaranteed to be within (1 ± ε)-factor of the ground truth with probability at least 1 − δ |
-| --seed SEED | optional | | random seed; only applicable for approximate computations |
+| --seed | optional | | random seed; only applicable for approximate computations |
 
 ### Output
 
@@ -193,7 +194,7 @@ Example:
 ```
 
 The example above has 3 features that have 2, 3, and 2 values, respectively. Declare-funs and first three assertions define bitvectors and limit the maximal value a corresponding feature can have. The last assertion defines a constraint between the features.  
-The script `approxmaxcov_mv.py` includes a function `parse_CASA_bv` that can convert input of CASA tool [1] into the format described above. 
+The script `approxmaxcov_mv.py` includes a function `parse_CASA_bv` that can convert inputs of CASA tool [1] into the algorithm's input format. 
 
 ### Running & Output
 
