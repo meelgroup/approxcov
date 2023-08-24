@@ -53,17 +53,24 @@ def check_coverage(samplefile, size):
     return countRes
 
 def genRandomBoxes(nvars, size, number):
-    res = {}
-    if cnk(nvars, size) *(2**size) < number:
-        print('There are only ' + str(cnk(nvars, size) *(2**size)) + ' combinations')
-        import itertools
+    res = []
+    maxval = cnk(nvars, size) *(2**size)
+    if  maxval < number:
+        print('There are only ' + str(maxval) + ' combinations')
         coeff = list(itertools.product(range(2), repeat=size))
         for comb in itertools.combinations(range(1,nvars+1), size):
-            res.update({(0,tuple(sorted(map(lambda x : x[0] if x[1]==1 else -x[0], zip(comb,k))))):0 for k in coeff})
+            res.extend([tuple(sorted(map(lambda x : x[0] if x[1]==1 else -x[0], zip(comb,k)))) for k in coeff])
         return res
     for i in range(number):
-        res.update({(i,tuple(sorted(map(lambda x: x if random.randint(0,1) == 1 else -x, random.sample(range(1,nvars+1), size))))):0})
+        res.append(tuple(sorted(map(lambda x: x if random.randint(0,1) == 1 else -x, random.sample(range(1,nvars+1), size)))))
     return res
+
+def updateBoxesCoverage(uncovBoxes, size, sample):
+    newUncovBoxes = [] 
+    for comb in uncovBoxes:
+        if not all(sample[abs(comb[i])-1] == comb[i] for i in range(size)):
+            newUncovBoxes.append(comb)
+    return newUncovBoxes
 
 def cnk(n, k):
     res =1
@@ -78,14 +85,13 @@ def approximate_coverage(samplefile, size, epsilon, delta):
     with open(samplefile, "r") as f:
         nvars = len(f.readline().strip().split(',')[1].strip().split(' '))     
     boxes = genRandomBoxes(nvars, size, nBoxes)
+    nBoxesGenerated = len(boxes)
     with open(samplefile, "r") as f:
         for line in f:
             s = list(map(int, line.strip().split(',')[1].strip().split(' ')))
-            for comb in boxes.keys():
-                if boxes[comb] == 0 and all(s[abs(comb[1][i])-1] == comb[1][i] for i in range(size)):
-                    boxes[comb] = 1
-    coveredBoxes = sum(boxes.values())
-    if len(boxes) < nBoxes:
+            boxes = updateBoxesCoverage(boxes, size, s)
+    coveredBoxes = nBoxesGenerated - len(boxes)
+    if nBoxesGenerated < nBoxes:
         countRes = coveredBoxes
     else:
         countRes = int(cnk(nvars, size) * coveredBoxes *(2**size) / nBoxes)
