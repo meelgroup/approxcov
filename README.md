@@ -30,12 +30,21 @@ Tested on: Ubuntu 18.10, 20.04 and Debian 11.
     7. `make`
     8. `sudo make install`
     9. `cd ../..`
-    10. `git clone https://github.com/meelgroup/approxmc`
-    11. `cd approxmc`
-    12. `mkdir build && cd build`
-    13. `cmake ..`
-    14. `make`
-    15. `sudo make install`
+    10. Newer versions of ApproxMC4 require Arjun (this step can be skipped if revision 30c6787 is used)
+        1. `cd ../..`
+        2. `git clone https://github.com/meelgroup/arjun`
+        3. `cd arjun`
+        4. `mkdir build && cd build`
+        5. `cmake ..`
+        6. `make`
+        7. `sudo make install`
+        8. `cd ../..`
+    11. `git clone https://github.com/meelgroup/approxmc`
+    12. `cd approxmc`
+    13. `mkdir build && cd build`
+    14. `cmake ..`
+    15. `make`
+    16. `sudo make install`
 3. Install z3: `sudo apt install z3`
 4. Install additional python library: `pip3 install pycosat`
 
